@@ -1,0 +1,263 @@
+#proyecto final
+import numpy as np
+usuarios=["pedro","tom","carlos"]
+sabores=["chocolate","fresa","vainilla"]
+while True:
+    try:
+        entrada=int(input("Deseas entrar al sistema de la heladeria?\n1-si\n2-no\n"))
+        break
+    except:
+        print("ese no es un valor admitido")
+#inventario inicial:
+inventario_A=np.array([["0"]*len(sabores)]*2, dtype=object)
+for j in range(0,len(inventario_A[0])):
+    inventario_A[0][j]=sabores[j]
+    inventario_A[1][j]="5"
+#reporte de inventario
+reporte=np.array([["0"]*((len(sabores))+1)]*((len(sabores))+1), dtype=object)
+for i in range(1,len(reporte[:,0])):
+    reporte[i][0]=usuarios[i-1]
+    for j in range(1,len(reporte[0])):
+        reporte[0][j]=sabores[j-1]
+
+def modificar_in():
+   global inventario_A
+   global sabores
+   while True:
+        try:
+            cambio_x=int(input("cuantos sabores vas a agregar\n"))
+            break
+        except:
+            print("ese no es un valor valido")
+   while cambio_x<=0:
+       print("no puedes agregar un numero negativo de sabores o 0")
+       while True:
+           try:
+               cambio_x=int(input("Cuantos sabores vas a agregar?\n"))
+               break
+           except:
+               print("ese no es un valor admitido")
+   inventario_b= np.array([["0"]*(len(inventario_A[0])+cambio_x)]*len(inventario_A[:,0]), dtype=object)
+   for i in range(0,len(inventario_A[:,0])):
+       for j in range(0,len(inventario_A[0])):
+           inventario_b[i][j]=inventario_A[i][j]
+   inventario_A=np.array([["0"]*len(inventario_b[0])]*len(inventario_b[:,0]), dtype=object)
+   for i in range(0,len(inventario_A[:,0])):
+       for j in range(0,len(inventario_A[0])):
+           inventario_A[i][j]=inventario_b[i][j]
+   for x in range(0,cambio_x):
+       n_sabor=str(input("sabor del nuevo helado\n"))
+       sabores.append(n_sabor)
+   for j in range(0,len(inventario_A[0])):
+       inventario_A[0][j]=sabores[j]
+
+def agregar_inv():
+    global sabores
+    global inventario_A
+    for x in range(0,len(sabores)):
+        print(x,sabores[x])
+    while True:
+        try:
+            sx=int(input("de que sabor te llego carga?\n"))
+            break
+        except:
+            print("ese no es un valor valido")
+    while sx<0 or sx>=len(sabores):
+        print("no valido")
+        while True:
+            try:
+                sx=int(input("de que sabor te llego carga?\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+    while True:
+        try:
+            qty=int(input("cuantos litros de helado te han llegado?\n"))
+            break
+        except:
+            print("ese no es un valor valido")
+    while qty<0:
+        print("no te pueden llegar valores negativos de mercancia")
+        while True:
+            try:
+                qty=int(input("cuantos litros de helado te han llegado?\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+    n_inv=int(inventario_A[1][sx])+qty
+    inventario_A[1][sx]=str(n_inv)
+
+def modificar_rep():
+    global reporte
+    global usuarios
+    global sabores
+    reporte_fake=np.array([["0"]*len(reporte[0])]*(len(reporte[:,0])+1), dtype=object)
+    for i in range(0,len(reporte[:,0])):
+        for j in range(0,len(reporte[0])):
+            reporte_fake[i][j]=reporte[i][j]
+    n_usuario=str(input("Como se llama el nuevo usuario?\n"))
+    reporte_fake[-1][0]=n_usuario
+    usuarios.append(n_usuario)
+    reporte=np.array([["0000000000000"]*len(reporte_fake[0])]*len(reporte_fake[:,0]))
+    for i in range(0,len(reporte[:,0])):
+        for j in range(0,len(reporte[0])):
+            reporte[i][j]=reporte_fake[i][j]
+
+def venta():
+    global inventario_A
+    global reporte
+    global sabores
+    global ux
+    ram=[]
+    for x in range(0,len(inventario_A[0])):
+        if int(inventario_A[1][x])>0:
+            print(x,inventario_A[:,x])
+            ram.append(x)
+        else:
+            continue
+    while True:
+        try:
+            vx=int(input("Que helado vendiste\n"))
+            break
+        except:
+            print("ese no es un valor valido")
+    while vx not in ram:
+        print("no tenemos de ese helado")
+        while True:
+            try:
+                vx=int(input("Que helado vendiste\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+    while True:
+        try:
+            qty=int(input("cuantos helados vendiste?\n"))
+            break
+        except:
+            print("ese no es un valor valido")
+    while qty>int(inventario_A[1][vx]):
+        print("no hay tantos helados")
+        while True:
+            try:
+                qty=int(input("cuantos helados vendiste?\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+        while qty<0:
+          print("no puedes vender un helado negativo")
+        while True:
+            try:
+                qty=int(input("cuantos helados vendiste?\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+    resta=int(inventario_A[1][vx])-qty
+    inventario_A[1][vx]=str(resta)
+    suma=int(reporte[ux+1][vx+1])+qty
+    reporte[ux+1][vx+1]=suma
+def reporte_indi():
+    global usuarios
+    global ux
+    global reporte
+    print(f"el reporte de{usuarios[ux]} es\n{reporte[0]}\n{reporte[ux+1]}")
+
+def menu3():
+    while True:
+            try:
+                div=int(input("Que vas a hacer?\n1- agregar un nuevo sabor\n2- agregar mas helado a sabores existentes\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+    if div==1:
+        modificar_in()
+    elif div==2:
+        agregar_inv()
+
+def menu2():
+    global ux
+    global usuarios
+    while True:
+        try:
+            constante=int(input(f"Deseas continuar como {usuarios[ux]}?\n1- si\n0- no\n"))
+            break
+        except:
+            print("ese no es un valor valido")
+    while constante==1:
+        print(f"1- vendiste un helado\n2- recibiste mercancia\n3- consulta de inventario\n4- reporte de ventas\n5- reporte de ventas de {usuarios[ux]}\n6- salir")
+        while True:
+            try:
+                accion=int(input("Que es lo que quiere realizar?\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+        while accion>6 or accion<0:
+            print("esa no es una opcion valida")
+            while True:
+                try:
+                    accion=int(input("Que es lo que quiere realizar?\n"))
+                    break
+                except:
+                    print("ese no es un valor valido")
+        if accion==1:
+            venta()
+        elif accion==2:
+            menu3()
+        elif accion==3:
+            print("el inventario es:\n",inventario_A)
+        elif accion==4:
+            print("el reporte de ventas es:\n",reporte)
+        elif accion==5:
+            reporte_indi()
+        else:
+            constante=0
+
+while 3<=entrada or entrada<=0:
+    print("esa no es una opcion")
+    while True:
+        try:
+            entrada=int(input("Deseas entrar al sistema de la heladeria?\n1-si\n2-no\n"))
+            break
+        except:
+            print("Ese no es un valor valido")
+while 3>entrada>0:
+    if entrada==1:
+        print("usuarios:")
+        for x in range(len(usuarios)):
+            print(x,"-",usuarios[x])
+        print(len(usuarios),"- otro")
+        while True:
+            try:
+                ux=int(input("quien ingresa al sistema?\n"))
+                break
+            except:
+                print("Ese no es un valor admitido")
+        while ux>len(usuarios) or ux<0:
+            print("esa no es una opcion")
+            while True:
+                try:
+                    ux=int(input("quien ingresa al sistema?\n"))
+                    break
+                except:
+                    print("ese no es un valor valido")
+        if ux==len(usuarios):
+            modificar_rep()
+        else:
+            while 0<=ux<len(usuarios):
+             menu2()
+             ux=-1
+        while True:
+            try:
+                entrada=int(input("Deseas entrar al sistema de la heladeria?\n1-si\n2-no\n"))
+                break
+            except:
+                print("ese no es un valor valido")
+        while 3<=entrada or entrada<=0:
+            print("esa no es una opcion")
+            while True:
+                try:
+                    entrada=int(input("Deseas entrar al sistema de la heladeria?\n1-si\n2-no\n"))
+                    break
+                except:
+                    print("ese no es un valor valido")
+    else:
+        break
